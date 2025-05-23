@@ -7,7 +7,7 @@ async fn greet(req: HttpRequest) -> impl Responder {
 
 async fn health_check() -> impl Responder{
     //todo!()
-    HttpResponse::Ok()
+    HttpResponse::Ok().body("in good health")
 }
 
 /*
@@ -22,7 +22,8 @@ async fn main() -> Result<(), std::io::Error> {
         .route("/{name}", web::get().to(greet))
         .route("/health_check",web::get().to(health_check))
     })
-    .bind("127.0.0.1:8000")?
+    //.bind("127.0.0.1:8000")? ---this address already in use
+    .bind(("127.0.0.1",8080))?
     .run()
     .await
     //println!("Hello, world!");
