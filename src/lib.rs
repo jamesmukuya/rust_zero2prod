@@ -1,4 +1,5 @@
 use actix_web::{web, App, HttpRequest, HttpResponse, HttpServer, Responder};
+use actix_web::dev::Server;
 
 #[allow(dead_code)]
 async fn greet(req: HttpRequest) -> impl Responder {
@@ -13,9 +14,11 @@ async fn health_check() -> impl Responder{
 
 /*
 The run fn is no longer binary endpoint hence no need for the pro-macros. It should be public
+We return `Server` on the happy path and we dropped the `async` keyword
+We have no .await call, so it is not needed anymore.
 */
-pub async fn run() -> Result<(),std::io::Error>{
-    HttpServer::new(|| {
+pub fn run() -> Result<Server,std::io::Error>{
+    let server = HttpServer::new(|| {
         App::new()
         //.route("/",web::get().to(greet))
         //.route("/{name}", web::get().to(greet))
@@ -23,7 +26,9 @@ pub async fn run() -> Result<(),std::io::Error>{
     })
     //.bind("127.0.0.1:8000")? ---this address already in use
     .bind(("127.0.0.1",8080))?
-    .run()
-    .await
+    .run();
+
+    //No .await here
+    Ok(server)
     //println!("Hello, world!");
 }
