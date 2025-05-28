@@ -8,8 +8,19 @@ async fn greet(req: HttpRequest) -> impl Responder {
     format!("Hello {}!",&name)
 }
 
+//health check responder
 async fn health_check() -> impl Responder{
-    //todo!()
+    HttpResponse::Ok().finish()
+}
+
+#[derive(serde::Deserialize)]
+struct FormData{
+    name: String,
+    email: String
+}
+
+//subscribe responder
+async fn subscribe(_form: web::Form<FormData>) -> HttpResponse{
     HttpResponse::Ok().finish()
 }
 
@@ -24,6 +35,8 @@ pub fn run(listener:TcpListener) -> Result<Server,std::io::Error>{
         .route("/",web::get().to(greet))
         .route("/{name}", web::get().to(greet))
         .route("/health_check",web::get().to(health_check))
+        // A new entry in our routing table for POST /subscriptions requests
+        .route("/subscriptions",web::post().to(subscribe))
     })
     //.bind("127.0.0.1:8000")? ---this address already in use
     //.bind(("127.0.0.1",8080))?
