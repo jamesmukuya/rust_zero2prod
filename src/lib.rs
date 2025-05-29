@@ -13,6 +13,9 @@ async fn health_check() -> impl Responder{
     HttpResponse::Ok().finish()
 }
 
+/*
+DB and docker to be installed to deal with persistency and tests
+*/
 #[derive(serde::Deserialize)]
 struct FormData{
     name: String,
